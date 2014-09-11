@@ -5,6 +5,10 @@ use Test::More;
 use ExtUtils::Installed;
 use File::Find;
 use File::ShareDir qw/dist_dir/;
+use Acme::Alien::DontPanic;
+
+plan skip_all => 'only for share install'
+  if Acme::Alien::DontPanic->install_type eq 'system';
 
 my $inst = ExtUtils::Installed->new;
 my $packlist = eval { $inst->packlist('Acme::Alien::DontPanic') };
@@ -14,6 +18,7 @@ unless ( defined $packlist ) {
 }
 
 my $dir = dist_dir('Acme-Alien-DontPanic');
+$dir =~ s{\\}{/}g if $^O eq 'MSWin32';
 
 my $test = sub {
   my $file = $File::Find::name;
